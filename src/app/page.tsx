@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Script from "next/script";
 import { useRef, useState, useEffect } from "react";
-import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa6";
+import { FaInstagram, FaFacebookF, FaYoutube, FaPinterestP, FaEnvelope, FaWhatsapp } from "react-icons/fa6";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -330,9 +330,30 @@ export default function Home() {
             <a href="https://www.youtube.com/channel/UC6qjtV4dC9U6OexTildKZJA" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors duration-300">
               <FaYoutube className="w-6 h-6" />
             </a>
+            <a href="https://pin.it/5gwWyry" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors duration-300">
+              <FaPinterestP className="w-6 h-6" />
+            </a>
+            <a href="mailto:bodypaintjujuy@gmail.com" className="text-neutral-400 hover:text-white transition-colors duration-300">
+              <FaEnvelope className="w-6 h-6" />
+            </a>
           </div>
         </div>
       </footer>
+
+      {/* FLOATING WHATSAPP BUTTON */}
+      <a 
+        href="https://wa.me/5493884378218?text=Hola%20Ezequiel,%20vengo%20desde%20la%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20hacer%20una%20consulta."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 bg-[#111] border border-neutral-800 rounded-full shadow-2xl hover:border-[#25D366]/50 transition-all duration-500 group"
+        aria-label="Contactar por WhatsApp"
+      >
+        {/* Modern Ripple Effect on Hover */}
+        <span className="absolute inset-0 rounded-full bg-[#25D366]/20 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out"></span>
+        <span className="absolute inset-0 rounded-full border border-[#25D366]/50 scale-100 group-hover:animate-ping opacity-0 group-hover:opacity-100"></span>
+        
+        <FaWhatsapp className="w-6 h-6 text-[#25D366] animate-pulse group-hover:animate-none group-hover:scale-110 relative z-10 transition-all duration-500 group-hover:drop-shadow-[0_0_8px_rgba(37,211,102,0.8)]" />
+      </a>
 
     </main>
   );
