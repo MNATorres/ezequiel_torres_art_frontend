@@ -12,6 +12,15 @@ export default function Home() {
   const [pins, setPins] = useState<string[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const [showFloating, setShowFloating] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowFloating(window.scrollY > window.innerHeight * 0.5);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -340,20 +349,49 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* FLOATING WHATSAPP BUTTON */}
-      <a 
-        href="https://wa.me/5493884378218?text=Hola%20Ezequiel,%20vengo%20desde%20la%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20hacer%20una%20consulta."
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 bg-[#111] border border-neutral-800 rounded-full shadow-2xl hover:border-[#25D366]/50 transition-all duration-500 group"
-        aria-label="Contactar por WhatsApp"
-      >
-        {/* Modern Ripple Effect on Hover */}
-        <span className="absolute inset-0 rounded-full bg-[#25D366]/20 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out"></span>
-        <span className="absolute inset-0 rounded-full border border-[#25D366]/50 scale-100 group-hover:animate-ping opacity-0 group-hover:opacity-100"></span>
+      {/* FLOATING SOCIAL BUTTONS */}
+      <div className={`fixed bottom-8 right-8 z-50 flex flex-col gap-4 transition-all duration-700 transform ${showFloating ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
         
-        <FaWhatsapp className="w-6 h-6 text-[#25D366] animate-pulse group-hover:animate-none group-hover:scale-110 relative z-10 transition-all duration-500 group-hover:drop-shadow-[0_0_8px_rgba(37,211,102,0.8)]" />
-      </a>
+        {/* Instagram Button */}
+        <a 
+          href="https://www.instagram.com/ezequiel_torres.art/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center justify-center w-14 h-14 bg-[#111] border border-neutral-800 rounded-full shadow-2xl hover:border-[#E1306C]/50 transition-all duration-500 group"
+          aria-label="Ir a Instagram"
+        >
+          <span className="absolute inset-0 rounded-full bg-[#E1306C]/20 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out"></span>
+          <span className="absolute inset-0 rounded-full border border-[#E1306C]/50 scale-100 group-hover:animate-ping opacity-0 group-hover:opacity-100"></span>
+          <FaInstagram className="w-6 h-6 text-neutral-400 group-hover:text-[#E1306C] relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(225,48,108,0.8)]" />
+        </a>
+
+        {/* YouTube Button */}
+        <a 
+          href="https://www.youtube.com/channel/UC6qjtV4dC9U6OexTildKZJA"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center justify-center w-14 h-14 bg-[#111] border border-neutral-800 rounded-full shadow-2xl hover:border-[#FF0000]/50 transition-all duration-500 group"
+          aria-label="Ir a YouTube"
+        >
+          <span className="absolute inset-0 rounded-full bg-[#FF0000]/20 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out"></span>
+          <span className="absolute inset-0 rounded-full border border-[#FF0000]/50 scale-100 group-hover:animate-ping opacity-0 group-hover:opacity-100"></span>
+          <FaYoutube className="w-6 h-6 text-neutral-400 group-hover:text-[#FF0000] relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(255,0,0,0.8)]" />
+        </a>
+
+        {/* WhatsApp Button */}
+        <a 
+          href="https://wa.me/5493884378218?text=Hola%20Ezequiel,%20vengo%20desde%20la%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20hacer%20una%20consulta."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center justify-center w-14 h-14 bg-[#111] border border-neutral-800 rounded-full shadow-2xl hover:border-[#25D366]/50 transition-all duration-500 group"
+          aria-label="Contactar por WhatsApp"
+        >
+          <span className="absolute inset-0 rounded-full bg-[#25D366]/20 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out"></span>
+          <span className="absolute inset-0 rounded-full border border-[#25D366]/50 scale-100 group-hover:animate-ping opacity-0 group-hover:opacity-100"></span>
+          <FaWhatsapp className="w-6 h-6 text-neutral-400 group-hover:text-[#25D366] relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(37,211,102,0.8)]" />
+        </a>
+
+      </div>
 
     </main>
   );
