@@ -315,11 +315,8 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="w-full bg-[#111] py-12 px-4 md:px-12 border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-neutral-500 font-sans text-sm">
-            © {new Date().getFullYear()} Ezequiel Torres. Todos los derechos reservados.
-          </div>
+      <footer className="w-full bg-[#111] pt-16 pb-24 md:pb-16 px-4 md:px-12 border-t border-neutral-800">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-8">
           <div className="flex items-center gap-8">
             <a href="https://www.instagram.com/ezequiel_torres.art/" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors duration-300">
               <FaInstagram className="w-6 h-6" />
@@ -336,6 +333,9 @@ export default function Home() {
             <a href="mailto:bodypaintjujuy@gmail.com" className="text-neutral-400 hover:text-white transition-colors duration-300">
               <FaEnvelope className="w-6 h-6" />
             </a>
+          </div>
+          <div className="text-neutral-600 font-sans text-sm text-center">
+            © {new Date().getFullYear()} Ezequiel Torres. Todos los derechos reservados.
           </div>
         </div>
       </footer>
