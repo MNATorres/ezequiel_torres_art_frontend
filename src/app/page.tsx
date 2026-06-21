@@ -2,11 +2,44 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useRef } from "react";
+import Script from "next/script";
+import { useRef, useState, useEffect } from "react";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa6";
 
 export default function Home() {
   const containerRef = useRef(null);
+  const [currentVideo, setCurrentVideo] = useState(0);
+  const [pins, setPins] = useState<string[]>([]);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (carouselRef.current) {
+        setWidth(carouselRef.current.scrollWidth - carouselRef.current.offsetWidth);
+      }
+    };
+    setTimeout(updateWidth, 100);
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [pins]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentVideo((prev) => (prev === 0 ? 1 : 0));
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/pinterest')
+      .then(res => res.json())
+      .then(data => {
+        if(data.images) setPins(data.images);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -18,10 +51,29 @@ export default function Home() {
     <main className="relative min-h-screen bg-background overflow-hidden" ref={containerRef}>
       
       {/* HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-center pt-20">
+      <section className="relative h-screen flex flex-col items-center justify-center pt-20 overflow-hidden">
+        {/* Background Videos Toggle */}
+        <div className="absolute inset-0 w-full h-full z-0 bg-black">
+          <video 
+            autoPlay loop muted playsInline 
+            className={`absolute inset-0 w-full h-full object-cover saturate-150 transition-opacity duration-[2000ms] ease-in-out ${currentVideo === 0 ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <source src="/eze_torres_vid1.mp4" type="video/mp4" />
+          </video>
+          <video 
+            autoPlay loop muted playsInline 
+            className={`absolute inset-0 w-full h-full object-cover saturate-150 transition-opacity duration-[2000ms] ease-in-out ${currentVideo === 1 ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <source src="/eze_torres_vid2.mp4" type="video/mp4" />
+          </video>
+        </div>
+        
+        {/* Dark Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
+
         <motion.div 
           style={{ y: heroY }}
-          className="text-center px-4"
+          className="text-center px-4 z-20 text-white"
         >
           <motion.h1 
             initial={{ opacity: 0, y: 50 }}
@@ -35,9 +87,9 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="mt-6 text-lg md:text-xl uppercase tracking-widest text-neutral-500 font-sans"
+            className="mt-6 text-lg md:text-xl uppercase tracking-widest text-neutral-300 font-sans"
           >
-            Artista Visual y Body Painter Profesional
+            Artista Visual de la Provincia de Jujuy
           </motion.p>
         </motion.div>
       </section>
@@ -75,8 +127,42 @@ export default function Home() {
         </div>
       </section>
 
+      {/* PINTEREST SECTION */}
+      <section className="bg-[#FAFAFA] text-[#111] pt-32 pb-16 relative z-10 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12 px-4"
+        >
+          <h2 className="text-4xl md:text-5xl font-serif mb-4">Inspiración Reciente</h2>
+          <div className="w-24 h-1 bg-[#111] mx-auto"></div>
+        </motion.div>
+        
+        {pins.length > 0 ? (
+          <motion.div ref={carouselRef} className="cursor-grab active:cursor-grabbing overflow-hidden pl-4 md:pl-12">
+            <motion.div 
+              drag="x" 
+              dragConstraints={{ right: 0, left: -width }} 
+              className="flex gap-6 w-max pr-12"
+            >
+              {pins.map((pin, i) => (
+                <motion.div key={i} className="min-w-[280px] md:min-w-[320px] h-[400px] relative rounded-xl overflow-hidden shadow-xl pointer-events-none">
+                  <Image src={pin} alt="Pinterest Art" fill className="object-cover" unoptimized />
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        ) : (
+          <div className="flex justify-center h-[400px] items-center text-neutral-400">
+            Cargando inspiración...
+          </div>
+        )}
+      </section>
+
       {/* TRAYECTORIA SECTION */}
-      <section className="py-32 px-4 md:px-12 bg-[#FAFAFA] text-[#111] relative z-10">
+      <section className="pt-16 pb-32 px-4 md:px-12 bg-[#FAFAFA] text-[#111] relative z-10">
         <div className="max-w-4xl mx-auto space-y-16">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
