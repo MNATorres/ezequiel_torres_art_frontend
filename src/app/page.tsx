@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import Script from "next/script";
 import { useRef, useState, useEffect } from "react";
 import { FaInstagram, FaFacebookF, FaYoutube, FaPinterestP, FaEnvelope, FaWhatsapp } from "react-icons/fa6";
@@ -15,7 +16,6 @@ export default function Home() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [showFloating, setShowFloating] = useState(false);
-  const [showAllTrayectorias, setShowAllTrayectorias] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,29 +58,6 @@ export default function Home() {
   });
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-
-  const trayectorias = [
-    {
-      title: "Fundador y Gestor - ANIMARTE",
-      desc: "Creación y gestión de ANIMARTE, un espacio dedicado al arte, dibujo y pintura. Impartición de talleres y cursos de body paint."
-    },
-    {
-      title: "Organizador - Seminario Provincial de Body Paint Jujuy",
-      desc: "Organización y participación activa en el Seminario Provincial de Body Paint Jujuy, un evento anual que celebra la creatividad y la expresión artística a través del cuerpo humano."
-    },
-    {
-      title: "Exposiciones de Arte",
-      desc: "Exhibición de obras de body paint en prestigiosos espacios y galerías de arte, incluyendo el Centro Cultural Héctor Tizón y el Museo de Bellas Artes de Jujuy."
-    },
-    {
-      title: "Reconocimientos y Premios",
-      desc: "Ganador de varios concursos y premios de arte a nivel local, nacional e internacional. Reconocimiento por parte del gobernador de Jujuy y la Universidad Nacional de Jujuy."
-    },
-    {
-      title: "Colaboración Mediática",
-      desc: "Colaboraciones con diversos medios de comunicación y cultura, incluyendo Jujuy FM 1017, Radio Nacional, El Tribuno de Jujuy y Notinor."
-    }
-  ];
 
   return (
     <main className="relative min-h-screen bg-background overflow-hidden" ref={containerRef}>
@@ -212,36 +189,15 @@ export default function Home() {
             <div className="w-24 h-1 bg-white mx-auto"></div>
           </motion.div>
 
-          <div className="space-y-12">
-            {(showAllTrayectorias ? trayectorias : trayectorias.slice(0, 2)).map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ margin: "-50px" }}
-                whileHover={{ x: 10, scale: 1.02 }}
-                transition={{ duration: 0.5 }}
-                className="border-l-2 border-neutral-700 pl-6 cursor-pointer"
-              >
-                <h3 className="text-2xl font-serif font-bold mb-2">{item.title}</h3>
-                <p className="text-lg text-neutral-400 font-sans">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="flex justify-center pt-4">
-            <motion.button
-              onClick={() => setShowAllTrayectorias((prev) => !prev)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="group relative overflow-hidden rounded-full border border-white/30 bg-white/5 px-10 py-4 text-sm md:text-base font-sans uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-colors duration-500 hover:border-white hover:text-black"
+          <div className="flex justify-center">
+            <Link
+              href="/trayectoria"
+              className="group relative inline-block overflow-hidden rounded-full border border-white/30 bg-white/5 px-10 py-4 text-sm md:text-base font-sans uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-colors duration-500 hover:border-white hover:text-black"
             >
               <span className="absolute inset-0 -z-0 origin-bottom scale-y-0 bg-white transition-transform duration-500 ease-out group-hover:scale-y-100"></span>
               <span className="absolute inset-0 -z-10 rounded-full bg-white/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-              <span className="relative z-10">
-                {showAllTrayectorias ? "Ver menos" : "Ver todas las trayectorias"}
-              </span>
-            </motion.button>
+              <span className="relative z-10">Ver trayectoria completa</span>
+            </Link>
           </div>
         </div>
       </section>

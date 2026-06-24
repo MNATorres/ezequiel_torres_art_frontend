@@ -2,22 +2,30 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 
 const LINKS = [{ label: "Trayectoria", href: "/trayectoria" }];
 
 export default function Header() {
+  const pathname = usePathname();
+  const isLanding = pathname === "/";
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  // The header only appears once the user scrolls past the hero video.
+  // On the landing the header only appears once the user scrolls past the hero
+  // video. On every other page (no hero) it's visible from the top.
   useEffect(() => {
+    if (!isLanding) {
+      setVisible(true);
+      return;
+    }
     const onScroll = () => setVisible(window.scrollY > window.innerHeight * 0.85);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isLanding]);
 
   // Close the mobile menu with Escape.
   useEffect(() => {
