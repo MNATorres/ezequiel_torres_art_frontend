@@ -4,10 +4,11 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "fr
 import { useRef } from "react";
 
 /**
- * Wraps an image (or any block) and traces a thin glowing white line around
- * its perimeter as the element is scrolled through the viewport. The line is
- * driven by scroll progress (not a one-shot), so it draws in as you scroll
- * down and undraws as you scroll back up — matching the side scroll beam.
+ * Wraps an image (or any block) and renders an animated white light glow
+ * *behind* it — a soft conic halo that slowly rotates and peeks out around the
+ * edges. The glow is revealed as the element scrolls into view, matching the
+ * white-light aesthetic of the side scroll beam. Nothing is drawn on top of
+ * the image itself.
  */
 export default function GlowFrame({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,38 +19,31 @@ export default function GlowFrame({ children }: { children: React.ReactNode }) {
     offset: ["start end", "center center"],
   });
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 30, mass: 0.4 });
-  const pathLength = useTransform(smooth, [0, 1], [0, 1]);
-  const opacity = useTransform(smooth, [0, 0.25, 1], [0, 0.7, 1]);
+  const opacity = useTransform(smooth, [0, 0.3, 1], [0, 0.6, 1]);
 
   return (
-    <div ref={ref} className="relative">
-      {children}
+    <div ref={ref} className="relative isolate">
       {!reduce && (
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{
-            filter:
-              "drop-shadow(0 0 4px rgba(255,255,255,0.9)) drop-shadow(0 0 16px rgba(255,255,255,0.45))",
-          }}
+        <motion.div
+          aria-hidden
+          style={{ opacity }}
+          className="pointer-events-none absolute -inset-6 -z-10"
         >
-          <motion.rect
-            x="1.2"
-            y="1.2"
-            width="97.6"
-            height="97.6"
-            rx="3"
-            ry="3"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-            style={{ pathLength, opacity }}
+          {/* Rotating conic glow that bleeds out from behind the image edges */}
+          <motion.div
+            className="absolute inset-0 rounded-[2rem] blur-2xl"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.55) 55deg, transparent 150deg, rgba(255,255,255,0.4) 250deg, transparent 330deg)",
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
           />
-        </svg>
+          {/* Soft steady core so the halo never fully disappears between arcs */}
+          <div className="absolute inset-4 rounded-[2rem] bg-white/10 blur-2xl" />
+        </motion.div>
       )}
+      {children}
     </div>
   );
 }
