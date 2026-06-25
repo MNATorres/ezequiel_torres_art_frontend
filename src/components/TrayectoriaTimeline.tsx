@@ -109,7 +109,9 @@ export default function TrayectoriaTimeline({ experiences }: { experiences: Expe
               {formatDate(exp.date)}
             </time>
 
-            <h3 className="mt-2 font-serif text-2xl text-white md:text-3xl">{exp.title}</h3>
+            <h3 className="mt-2 break-words font-serif text-2xl text-white md:text-3xl">
+              {exp.title}
+            </h3>
 
             {exp.imageUrl && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -120,7 +122,7 @@ export default function TrayectoriaTimeline({ experiences }: { experiences: Expe
               />
             )}
 
-            <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed text-neutral-400 md:text-lg">
+            <p className="mt-4 max-w-2xl break-words font-sans text-base leading-relaxed text-neutral-400 md:text-lg">
               {exp.description}
             </p>
           </motion.article>
