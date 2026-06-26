@@ -9,6 +9,7 @@ import { FaInstagram, FaFacebookF, FaYoutube, FaPinterestP, FaEnvelope, FaWhatsa
 import ScrollBeam from "@/components/ScrollBeam";
 import GlowFrame from "@/components/GlowFrame";
 import type { Experience } from "@/lib/experiences";
+import type { Artwork } from "@/lib/artworks";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -19,6 +20,8 @@ export default function Home() {
   const [showFloating, setShowFloating] = useState(false);
   const [recentTrayectorias, setRecentTrayectorias] = useState<Experience[]>([]);
   const [loadingTrayectorias, setLoadingTrayectorias] = useState(true);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [loadingArtworks, setLoadingArtworks] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,6 +68,16 @@ export default function Home() {
       })
       .catch(err => console.error(err))
       .finally(() => setLoadingTrayectorias(false));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/artworks')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data.artworks)) setArtworks(data.artworks);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoadingArtworks(false));
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -257,7 +270,7 @@ export default function Home() {
       <section className="relative z-10 bg-[#111] text-white py-32 px-4 md:px-12">
         <div className="max-w-7xl mx-auto space-y-40">
           
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ margin: "-50px" }}
@@ -268,98 +281,68 @@ export default function Home() {
             <p className="mt-4 text-neutral-400 text-lg uppercase tracking-widest font-sans">El cuerpo humano como lienzo</p>
           </motion.div>
 
-          {/* Art Piece 1 */}
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full md:w-1/2"
-            >
-              <div className="mx-auto w-[85%] md:w-[70%]">
-                <GlowFrame>
-                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg shadow-2xl shadow-black/50">
-                    <Image src="/murales.png" alt="Murales Humanos" fill className="object-cover transition-transform duration-700 hover:scale-110" />
+          {loadingArtworks ? (
+            <div className="space-y-40">
+              {[0, 1].map((i) => (
+                <div key={i} className="flex flex-col md:flex-row items-center gap-12 animate-pulse">
+                  <div className="w-full md:w-1/2">
+                    <div className="mx-auto w-[85%] md:w-[70%] aspect-[4/5] rounded-lg bg-white/5" />
                   </div>
-                </GlowFrame>
-              </div>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="w-full md:w-1/2 space-y-6"
-            >
-              <h2 className="text-4xl md:text-5xl font-serif">Murales Humanos</h2>
-              <p className="text-lg text-neutral-300 leading-relaxed font-sans max-w-md">
-                Cada pincelada transforma la piel en una obra maestra respirante, mezclando la forma humana con narrativas abstractas e hiperrealistas.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Art Piece 2 */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full md:w-1/2"
-            >
-              <div className="mx-auto w-[85%] md:w-[70%]">
-                <GlowFrame>
-                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg shadow-2xl shadow-black/50">
-                    <Image src="/bodyPaint.jpg" alt="Identidad e Ilusion" fill className="object-cover transition-transform duration-700 hover:scale-110" />
+                  <div className="w-full md:w-1/2 space-y-6">
+                    <div className="h-10 w-2/3 rounded bg-white/10" />
+                    <div className="h-4 w-full rounded bg-white/10" />
+                    <div className="h-4 w-5/6 rounded bg-white/10" />
                   </div>
-                </GlowFrame>
-              </div>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="w-full md:w-1/2 space-y-6 md:text-right flex flex-col md:items-end"
-            >
-              <h2 className="text-4xl md:text-5xl font-serif">Identidad e Ilusión</h2>
-              <p className="text-lg text-neutral-300 leading-relaxed font-sans max-w-md">
-                Técnicas avanzadas de pintura corporal que juegan con la perspectiva, la luz y la sombra para crear ilusiones ópticas impactantes.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Art Piece 3 */}
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <motion.div 
-              initial={{ opacity: 0, y: 100 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full md:w-1/2"
-            >
-              <div className="mx-auto w-[85%] md:w-[70%]">
-                <GlowFrame>
-                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg shadow-2xl shadow-black/50">
-                    <Image src="/seminarios.png" alt="Seminarios y Talleres" fill className="object-cover transition-transform duration-700 hover:scale-110" />
-                  </div>
-                </GlowFrame>
-              </div>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="w-full md:w-1/2 space-y-6"
-            >
-              <h2 className="text-4xl md:text-5xl font-serif">Seminarios y Talleres</h2>
-              <p className="text-lg text-neutral-300 leading-relaxed font-sans max-w-md">
-                Compartiendo la técnica y la pasión con nuevas generaciones de artistas a través de talleres intensivos y seminarios provinciales.
-              </p>
-            </motion.div>
-          </div>
+                </div>
+              ))}
+            </div>
+          ) : artworks.length > 0 ? (
+            artworks.map((art, index) => {
+              const reversed = index % 2 !== 0;
+              return (
+                <div
+                  key={art._id}
+                  className={`flex flex-col ${reversed ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-12`}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: reversed ? 50 : -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ margin: "-100px" }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="w-full md:w-1/2"
+                  >
+                    <div className="mx-auto w-[85%] md:w-[70%]">
+                      <GlowFrame>
+                        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg shadow-2xl shadow-black/50">
+                          {art.imageUrl ? (
+                            <Image src={art.imageUrl} alt={art.title} fill className="object-cover transition-transform duration-700 hover:scale-110" />
+                          ) : (
+                            <div className="absolute inset-0 bg-neutral-800" />
+                          )}
+                        </div>
+                      </GlowFrame>
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: reversed ? -50 : 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ margin: "-100px" }}
+                    transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                    className={`w-full md:w-1/2 space-y-6 ${reversed ? "md:text-right flex flex-col md:items-end" : ""}`}
+                  >
+                    <h2 className="text-4xl md:text-5xl font-serif break-words">{art.title}</h2>
+                    <p className="text-lg text-neutral-300 leading-relaxed font-sans max-w-md break-words">
+                      {art.description}
+                    </p>
+                  </motion.div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex justify-center">
+              <p className="text-neutral-500 text-lg uppercase tracking-widest font-sans">Próximamente</p>
+            </div>
+          )}
 
         </div>
       </section>
