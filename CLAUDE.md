@@ -37,14 +37,31 @@ scroll-triggered motion.
   for smooth scrolling site-wide. Lenis's required CSS lives at the bottom of
   `globals.css` — keep them together.
 - **`src/app/page.tsx`** — the entire page. One large `"use client"` component holding
-  every section (hero crossfade videos, about, Pinterest carousel, trayectoria, gallery,
-  footer, floating social buttons) and all the `useState`/`useEffect`/Framer Motion
-  logic. Adding a section means editing this file, not creating new component files —
-  match the existing inline-section pattern.
-- **`src/app/api/pinterest/route.ts`** — the only server code. Server-side proxy that
-  fetches the artist's Pinterest RSS feed, regex-extracts image URLs, upgrades them from
-  `236x` to `736x` resolution, dedupes, and returns the first 30. Exists to dodge CORS
-  and cache the feed (`revalidate: 60`). `page.tsx` fetches `/api/pinterest` on mount.
+  every section (hero crossfade videos, about, Pinterest carousel, trayectoria teaser,
+  gallery, footer, floating social buttons) and all the `useState`/`useEffect`/Framer
+  Motion logic. Adding a section means editing this file, not creating new component
+  files — match the existing inline-section pattern. The **gallery ("Arte en Vivo")** and
+  the **trayectoria teaser** are data-driven: each fetches a same-origin proxy on mount
+  and renders three states — skeleton while loading, the content, then an empty state
+  (the gallery shows "Próximamente"; trayectoria simply renders nothing).
+- **Backend-backed content** — dynamic content (gallery artworks, trayectoria) is read
+  from the external REST backend through same-origin **route-handler proxies**, so the
+  browser never sees the backend URL and CORS is sidestepped:
+  - `src/lib/experiences.ts` / `src/lib/artworks.ts` — server-only fetchers
+    (`getExperiences` / `getArtworks`) that hit `${API_URL}/api/experiences` and
+    `/api/artworks` with `cache: "no-store"` (so manager edits show up immediately).
+    `API_URL` comes from the environment (`.env.local` in dev, the Vercel project's env
+    vars in prod); it defaults to `http://localhost:3000`.
+  - `src/app/api/experiences/route.ts` / `src/app/api/artworks/route.ts` — the proxies
+    `page.tsx` actually `fetch`es; each returns `{ experiences }` / `{ artworks }` and
+    falls back to `[]` on any error.
+  - Artwork images are Cloudinary URLs, whitelisted in `next.config.ts`
+    (`images.remotePatterns` → `res.cloudinary.com`) so `next/image` can optimize them.
+    Whitelist any new remote image host there or `next/image` 400s.
+- **`src/app/api/pinterest/route.ts`** — proxy that fetches the artist's Pinterest RSS
+  feed, regex-extracts image URLs, upgrades them from `236x` to `736x` resolution,
+  dedupes, and returns the first 30. Dodges CORS and caches the feed (`revalidate: 60`).
+  `page.tsx` fetches `/api/pinterest` on mount.
 
 ## Styling conventions
 
